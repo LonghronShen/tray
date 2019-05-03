@@ -6,7 +6,7 @@ else()
   set(subproject OFF)
 endif()
 
-PROJECT(tray C)
+PROJECT(tray C CXX)
 
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
@@ -31,7 +31,7 @@ else()
 	if(UNIX)
 		if(APPLE)
 			add_compile_definitions(TRAY_APPKIT=1)
-			find_library(Cocoa REQUIRED)
+			find_library(COCOA Cocoa REQUIRED)
 		else()
 			PKG_CHECK_MODULES(APPINDICATOR REQUIRED appindicator3-0.1)
 			IF(APPINDICATOR_FOUND)
@@ -50,11 +50,11 @@ file(GLOB src
 	${CMAKE_CURRENT_LIST_DIR}/*.png)
 
 add_executable(tray_example ${src})
-target_link_libraries(tray_example INTERFACE tray_base)
+target_link_libraries(tray_example tray_base)
 
 if(UNIX)
 	if(APPLE)
-		target_link_libraries(tray_example Cocoa)
+		target_link_libraries(tray_example ${COCOA})
 	else()
 		target_link_libraries(tray_example APPINDICATOR_STATIC_LIBRARIES)
 	endif()
